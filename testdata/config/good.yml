@@ -1,0 +1,46 @@
+base_url: https://netbox.domain.tld
+api_token: 680000000000000000000000000000000000s038
+scan_interval: 5m
+
+groups:
+  - file: junos_exporter.prom
+    type: device_tag
+    match: junos_exporter
+    scan_interval: 20s
+    port: 1234
+    labels:
+      foo: bar
+
+  - file: ipmi_exporter.prom
+    type: interface_tag
+    match: ipmi_exporter
+    scan_interval: 5m
+    port: 1234
+    labels:
+      foo: bar
+
+  - file: junos2.prom
+    type: service
+    match: junos_exporter
+    port: 9100
+    labels:
+      foo: bar
+    flags:
+      include_vms: false
+      inet_family: inet
+      all_addresses: true
+
+  - file: junos3.prom
+    type: service
+    match: junos_exporter
+    labels:
+      foo: bar
+    flags:
+      include_vms: false
+      inet_family: inet
+      all_addresses: true
+    filters:
+      - label: netbox_foo
+        match: '(bar|blub)'
+      - label: netbox_bar
+        match: 'something[0-9]+'

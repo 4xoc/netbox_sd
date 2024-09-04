@@ -1,0 +1,12 @@
+base_url: https://netbox.domain.tld
+api_token: 123
+scan_interval: 5m
+
+groups:
+  - file: junos2.prom
+    type: device_tag
+    match: junos_exporter
+    port: 1234
+    filters:
+      - label: bla
+        match: foo
