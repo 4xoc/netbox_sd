@@ -23,11 +23,17 @@ This also adds additional labels to each target and metrics for monitoring.
 The basis of this project is the code base used some years now at WIIT AG in production. With the open sourcing of the
 base code, this project aims to maintain and expand its features. There is currently no fixed plan where the development
 will head towards but everyone is invited to request features, open bug issues and help develop this project to cover
-more bases.
+more bases. A couple of ideas I have in mind:
+
+- have `staged` status already add devices but create a silence for the device; similarly have `failed` do the same for
+	already existing devices
+- allow for label dropping within netbox_sd to remove unwanted labels and reduce cardinality
+- more TLS features like fixed CA cert for internal CAs; client certificate authentication towards Netbox
+- how about a web gui to get more insights into netbox_sd?
 
 ## Supported Netbox Versions
-< 4.0.0 (v4 has not been tested, but is a high prio topic)
->= 3.4.5 required (or else you'll have a bad time)
+< 4.0.0 (v4 has not been tested, but is a high prio topic)  
+\>= 3.4.5 required (or else you'll have a bad time)
 
 ## Usage Considerations
 This software is intended to run on the same machine that Prometheus runs on. As a user, you must ensure that the files
@@ -78,8 +84,8 @@ Feature to add tags as labels is planned.
 Netbox_SD is configured using a yaml formatted file and pointed to using the `-config.file` command line argument.
 
 ```
-# required: base URL of the API endpoint
-api_base_url: https://netbox.domain.tld/api
+# required: base URL of the Netbox installation
+base_url: https://netbox.domain.tld/
 
 # required: API token with read permissions
 api_token: 1234567890
@@ -111,14 +117,14 @@ groups:
 			
 		# optional: filter by label values
 		filters:
-				# required: label to match for (must begin with `netbox_`)
-			- label: netbox_rack
-				# required: regular expression that must match for the above label for the target to be included.
-				# see https://github.com/google/re2/wiki/Syntax for details
-				match: 'rack[0-9]+'
-				# optionally negate a match (making a regex that would otherwise match be excluded from the results); useful
-				# where golang regex doesn't support negate natively.
-				negate: true
+      # required: label to match for (must begin with `netbox_`)
+      - label: netbox_rack
+      	# required: regular expression that must match for the above label for the target to be included.
+      	# see https://github.com/google/re2/wiki/Syntax for details
+      	match: 'rack[0-9]+'
+      	# optionally negate a match (making a regex that would otherwise match be excluded from the results); useful
+      	# where golang regex doesn't support negate natively.
+      	negate: true
 
     # additional flags to change behaviour for a particular group
     flags:
