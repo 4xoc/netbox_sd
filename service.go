@@ -21,14 +21,15 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/4xoc/netbox_sd/netbox"
+	"github.com/4xoc/netbox_sd/internal/config"
+	"github.com/4xoc/netbox_sd/pkg/netbox"
 
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/discovery/targetgroup"
 )
 
 // GetTargetsByService returns a list of of target devices that match a given service name
-func (sd *netboxSD) getTargetsByService(group *Group) ([]*targetgroup.Group, error) {
+func (sd *netboxSD) getTargetsByService(group *config.Group) ([]*targetgroup.Group, error) {
 	var (
 		err         error
 		i, j        int
@@ -114,7 +115,7 @@ func (sd *netboxSD) getTargetsByService(group *Group) ([]*targetgroup.Group, err
 		// add additional labels
 		target.Labels = target.Labels.Merge(group.Labels)
 
-		if !group.filtersMatch(target) {
+		if !group.FiltersMatch(target) {
 			log.Printf("device %s doesn't match applied filters...skipping device", dev.Name)
 			SetTargetStatusMetric(group.File, dev, TargetSkippedNotMatchingFilters)
 			continue

@@ -21,16 +21,16 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/4xoc/netbox_sd/netbox"
+	"github.com/4xoc/netbox_sd/internal/config"
+	"github.com/4xoc/netbox_sd/pkg/netbox"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/model"
-	"github.com/prometheus/prometheus/discovery/targetgroup"
 )
 
 // selectAddr takes a given list of netbox.IP and group config and checks which IPs should be included in the target's
 // list. It filters by flags defined in the Group (like InetFamily and AllAddresses).
-func selectAddr(addrs []*netbox.IP, group *Group) []*netbox.IP {
+func selectAddr(addrs []*netbox.IP, group *config.Group) []*netbox.IP {
 	var (
 		firstInet6 *netbox.IP
 		firstInet  *netbox.IP
@@ -56,8 +56,8 @@ func selectAddr(addrs []*netbox.IP, group *Group) []*netbox.IP {
 
 		switch addr.Family() {
 		case 6:
-			if *group.Flags.InetFamily == InetFamilyInet6 ||
-				*group.Flags.InetFamily == InetFamilyAny {
+			if *group.Flags.InetFamily == config.InetFamilyInet6 ||
+				*group.Flags.InetFamily == config.InetFamilyAny {
 				// Inet Family of addr matches flag filters.
 
 				if firstInet6 == nil {
@@ -77,8 +77,8 @@ func selectAddr(addrs []*netbox.IP, group *Group) []*netbox.IP {
 			}
 
 		case 4:
-			if *group.Flags.InetFamily == InetFamilyInet ||
-				*group.Flags.InetFamily == InetFamilyAny {
+			if *group.Flags.InetFamily == config.InetFamilyInet ||
+				*group.Flags.InetFamily == config.InetFamilyAny {
 				// Inet Family of addr matches flag filters.
 
 				if firstInet == nil {
@@ -184,39 +184,6 @@ func generateCustomFieldLabels(cfm netbox.CustomFieldMap) (model.LabelSet, error
 
 	// returns an error if any of the custom fields caused an error
 	return allLabels, gotError
-}
-
-// MatchesFilter returns true if all filters match with the target's labels.
-func (group *Group) filtersMatch(target *targetgroup.Group) bool {
-	var (
-		filter *Filter
-		ok     bool
-		val    model.LabelValue
-	)
-
-	for _, filter = range group.Filters {
-		if val, ok = target.Labels[model.LabelName(filter.Label)]; !ok {
-			// Filter label doesn't exist for target and therefore cannot match.
-			return false
-		}
-
-		if filter.regex.Match([]byte(val)) {
-			// regex matches
-
-			if filter.Negate {
-				// filter is negated thus return false
-				return false
-			}
-		} else {
-			// regex didn't match
-
-			if !filter.Negate {
-				return false
-			}
-		}
-	}
-
-	return true
 }
 
 // SetTargetStatusMetric sets the PromTargetStatus metric for a given Device in group to state.

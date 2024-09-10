@@ -20,10 +20,11 @@ package main
 import (
 	"testing"
 
-	"github.com/4xoc/netbox_sd/netbox"
+	"github.com/4xoc/netbox_sd/internal/config"
+	"github.com/4xoc/netbox_sd/internal/util"
+	"github.com/4xoc/netbox_sd/pkg/netbox"
 
 	"github.com/prometheus/common/model"
-	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -66,7 +67,7 @@ func TestSelectAddr(t *testing.T) {
 	var (
 		data = []struct {
 			input    []*netbox.IP
-			group    *Group
+			group    *config.Group
 			expected []*netbox.IP
 		}{
 			{
@@ -76,11 +77,11 @@ func TestSelectAddr(t *testing.T) {
 						Status:  netbox.StatusIPActive,
 					},
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("inet6"),
-						AllAddresses: newPtr[bool](true),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("inet6"),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 				},
 				expected: []*netbox.IP{
@@ -98,11 +99,11 @@ func TestSelectAddr(t *testing.T) {
 						Status:  netbox.StatusIPActive,
 					},
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("inet"),
-						AllAddresses: newPtr[bool](true),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("inet"),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 				},
 				expected: []*netbox.IP{},
@@ -124,11 +125,11 @@ func TestSelectAddr(t *testing.T) {
 					},
 					nil,
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("inet6"),
-						AllAddresses: newPtr[bool](true),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("inet6"),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 				},
 				expected: []*netbox.IP{
@@ -162,11 +163,11 @@ func TestSelectAddr(t *testing.T) {
 						Status:  netbox.StatusIPActive,
 					},
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("inet6"),
-						AllAddresses: newPtr[bool](true),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("inet6"),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 				},
 				expected: []*netbox.IP{
@@ -196,11 +197,11 @@ func TestSelectAddr(t *testing.T) {
 						Status:  netbox.StatusIPActive,
 					},
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("inet"),
-						AllAddresses: newPtr[bool](false),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("inet"),
+						AllAddresses: util.NewPtr[bool](false),
 					},
 				},
 				expected: []*netbox.IP{
@@ -226,11 +227,11 @@ func TestSelectAddr(t *testing.T) {
 						Status:  netbox.StatusIPActive,
 					},
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("inet6"),
-						AllAddresses: newPtr[bool](false),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("inet6"),
+						AllAddresses: util.NewPtr[bool](false),
 					},
 				},
 				expected: []*netbox.IP{
@@ -256,11 +257,11 @@ func TestSelectAddr(t *testing.T) {
 						Status:  netbox.StatusIPActive,
 					},
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("any"),
-						AllAddresses: newPtr[bool](true),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("any"),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 				},
 				expected: []*netbox.IP{
@@ -294,11 +295,11 @@ func TestSelectAddr(t *testing.T) {
 						Status:  netbox.StatusIPActive,
 					},
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("any"),
-						AllAddresses: newPtr[bool](true),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("any"),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 				},
 				expected: []*netbox.IP{
@@ -332,11 +333,11 @@ func TestSelectAddr(t *testing.T) {
 						Status:  netbox.StatusIPActive,
 					},
 				},
-				group: &Group{
-					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string]("any"),
-						AllAddresses: newPtr[bool](true),
+				group: &config.Group{
+					Flags: config.Flags{
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string]("any"),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 				},
 				expected: []*netbox.IP{
@@ -387,99 +388,4 @@ func TestGenerateCustomFieldLabels(t *testing.T) {
 	result, err = generateCustomFieldLabels(input)
 	require.NoError(t, err)
 	assert.Equal(t, expected, result)
-}
-
-func TestFiltersMatch(t *testing.T) {
-	var (
-		group = Group{
-			Filters: []*Filter{
-				&Filter{
-					Label: "netbox_foo",
-					Match: "bar",
-				},
-				&Filter{
-					Label: "netbox_foo2",
-					Match: "(foo|bar)",
-				},
-				&Filter{
-					Label: "netbox_foo3",
-					Match: "[0-9]+",
-				},
-				&Filter{
-					Label:  "netbox_foo4",
-					Match:  "bar",
-					Negate: true,
-				},
-			},
-		}
-		data = []struct {
-			target   *targetgroup.Group
-			expected bool
-		}{
-			{
-				// should work
-				target: &targetgroup.Group{
-					Labels: model.LabelSet{
-						"netbox_foo":  "bar",
-						"netbox_foo2": "foo",
-						"netbox_foo3": "123",
-						"netbox_foo4": "123",
-					},
-				},
-				expected: true,
-			},
-			{
-				// missing label defined in filters should fail
-				target: &targetgroup.Group{
-					Labels: model.LabelSet{
-						"netbox_foo":  "bar",
-						"netbox_foo2": "foo",
-					},
-				},
-				expected: false,
-			},
-			{
-				// netbox_foo3 should fail
-				target: &targetgroup.Group{
-					Labels: model.LabelSet{
-						"netbox_foo":  "bar",
-						"netbox_foo2": "foo",
-						"netbox_foo3": "abc",
-					},
-				},
-				expected: false,
-			},
-			{
-				// all label values are wrong
-				target: &targetgroup.Group{
-					Labels: model.LabelSet{
-						"netbox_foo":  "this",
-						"netbox_foo2": "should",
-						"netbox_foo3": "fail",
-					},
-				},
-				expected: false,
-			},
-			{
-				// negate match and thus return false
-				target: &targetgroup.Group{
-					Labels: model.LabelSet{
-						"netbox_foo":  "bar",
-						"netbox_foo2": "foo",
-						"netbox_foo3": "123",
-						"netbox_foo4": "bar",
-					},
-				},
-				expected: false,
-			},
-		}
-		i int
-	)
-
-	// Filters must compile
-	require.NoError(t, validateFilters(group.Filters))
-
-	for i = range data {
-		assert.Equal(t, data[i].expected, group.filtersMatch(data[i].target))
-	}
 }

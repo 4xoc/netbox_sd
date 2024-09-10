@@ -15,7 +15,9 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package main
+// Package config provides data structures and methods to read configuration files and validates the content of such
+// files for sane values while setting default where applicable.
+package config
 
 import (
 	"errors"
@@ -26,6 +28,7 @@ import (
 	"time"
 
 	"github.com/prometheus/common/model"
+	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"gopkg.in/yaml.v3"
 )
 
@@ -98,7 +101,7 @@ var (
 )
 
 // ReadConfigFile reads and parses a given config file
-func readConfigFile(file string) (*Config, error) {
+func ReadConfigFile(file string) (*Config, error) {
 	var (
 		err         error
 		fileContent []byte
@@ -243,4 +246,37 @@ func validateFilters(filters []*Filter) error {
 	}
 
 	return nil
+}
+
+// FiltersMatch returns true if all filters match with the target's labels.
+func (group *Group) FiltersMatch(target *targetgroup.Group) bool {
+	var (
+		filter *Filter
+		ok     bool
+		val    model.LabelValue
+	)
+
+	for _, filter = range group.Filters {
+		if val, ok = target.Labels[model.LabelName(filter.Label)]; !ok {
+			// Filter label doesn't exist for target and therefore cannot match.
+			return false
+		}
+
+		if filter.regex.Match([]byte(val)) {
+			// regex matches
+
+			if filter.Negate {
+				// filter is negated thus return false
+				return false
+			}
+		} else {
+			// regex didn't match
+
+			if !filter.Negate {
+				return false
+			}
+		}
+	}
+
+	return true
 }

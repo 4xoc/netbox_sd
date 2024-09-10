@@ -20,7 +20,8 @@ package main
 import (
 	"log"
 
-	"github.com/4xoc/netbox_sd/netbox"
+	"github.com/4xoc/netbox_sd/internal/config"
+	"github.com/4xoc/netbox_sd/pkg/netbox"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/model"
@@ -28,7 +29,7 @@ import (
 )
 
 // GetTargetsByDeviceTag returns a list of of target devices that match a given device tag.
-func (sd *netboxSD) getTargetsByDeviceTag(group *Group) ([]*targetgroup.Group, error) {
+func (sd *netboxSD) getTargetsByDeviceTag(group *config.Group) ([]*targetgroup.Group, error) {
 	var (
 		err         error
 		dev         *netbox.Device
@@ -103,7 +104,7 @@ func (sd *netboxSD) getTargetsByDeviceTag(group *Group) ([]*targetgroup.Group, e
 		// add additional labels
 		target.Labels = target.Labels.Merge(group.Labels)
 
-		if !group.filtersMatch(target) {
+		if !group.FiltersMatch(target) {
 			log.Printf("device %s doesn't match applied filters...skipping device", dev.Name)
 			SetTargetStatusMetric(group.File, dev, TargetSkippedNotMatchingFilters)
 			continue

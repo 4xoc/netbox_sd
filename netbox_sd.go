@@ -25,7 +25,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/4xoc/netbox_sd/netbox"
+	"github.com/4xoc/netbox_sd/internal/config"
+	"github.com/4xoc/netbox_sd/pkg/netbox"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/prometheus/discovery/targetgroup"
@@ -37,7 +38,7 @@ const (
 )
 
 type netboxSD struct {
-	cfg        *Config
+	cfg        *config.Config
 	api        netbox.ClientIface
 	httpServer *http.Server
 }
@@ -87,7 +88,7 @@ func main() {
 
 	log.Printf("loading config")
 
-	sd.cfg, err = readConfigFile(*cfgFile)
+	sd.cfg, err = config.ReadConfigFile(*cfgFile)
 	if err != nil {
 		log.Printf("failed to load config file: %v", err)
 		os.Exit(1)
@@ -129,7 +130,7 @@ func main() {
 
 // Worker performs all necessary steps to fetch targets based on the group's configuration markers and writes those
 // targets into a file that can be picked up by Prometheus' file_sd.
-func (sd *netboxSD) worker(group *Group) {
+func (sd *netboxSD) worker(group *config.Group) {
 	var (
 		// init last run with a time that is sure to trigger a scan on first iteration
 		lastRun  time.Time = time.Now().Add(-group.ScanInterval)
@@ -151,21 +152,21 @@ func (sd *netboxSD) worker(group *Group) {
 			failed = false
 
 			switch group.Type {
-			case GroupTypeService:
+			case config.GroupTypeService:
 				targets, err = sd.getTargetsByService(group)
 				if err != nil {
 					log.Printf("getting targets for group %s failed: %s", group.File, err.Error())
 					failed = true
 				}
 
-			case GroupTypeDeviceTag:
+			case config.GroupTypeDeviceTag:
 				targets, err = sd.getTargetsByDeviceTag(group)
 				if err != nil {
 					log.Printf("getting targets for group %s failed: %s", group.File, err.Error())
 					failed = true
 				}
 
-			case GroupTypeInterfaceTag:
+			case config.GroupTypeInterfaceTag:
 				targets, err = sd.getTargetsByInterfaceTag(group)
 				if err != nil {
 					log.Printf("getting targets for group %s failed: %s", group.File, err.Error())

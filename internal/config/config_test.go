@@ -15,15 +15,19 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package main
+package config
 
 import (
 	"regexp"
 	"testing"
 	"time"
 
+	"github.com/4xoc/netbox_sd/internal/util"
+
 	"github.com/prometheus/common/model"
+	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestReadConfig(t *testing.T) {
@@ -40,32 +44,32 @@ func TestReadConfig(t *testing.T) {
 					File:               "junos_exporter.prom",
 					Type:               GroupTypeDeviceTag,
 					Match:              "junos_exporter",
-					Port:               newPtr[int](1234),
+					Port:               util.NewPtr[int](1234),
 					ScanIntervalString: "20s",
 					ScanInterval:       time.Duration(20 * time.Second),
 					Labels: model.LabelSet{
 						"foo": "bar",
 					},
 					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string](InetFamilyAny),
-						AllAddresses: newPtr[bool](false),
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string](InetFamilyAny),
+						AllAddresses: util.NewPtr[bool](false),
 					},
 				},
 				&Group{
 					File:               "ipmi_exporter.prom",
 					Type:               GroupTypeInterfaceTag,
 					Match:              "ipmi_exporter",
-					Port:               newPtr[int](1234),
+					Port:               util.NewPtr[int](1234),
 					ScanIntervalString: "5m",
 					ScanInterval:       time.Duration(5 * time.Minute),
 					Labels: model.LabelSet{
 						"foo": "bar",
 					},
 					Flags: Flags{
-						IncludeVMs:   newPtr[bool](true),
-						InetFamily:   newPtr[string](InetFamilyAny),
-						AllAddresses: newPtr[bool](false),
+						IncludeVMs:   util.NewPtr[bool](true),
+						InetFamily:   util.NewPtr[string](InetFamilyAny),
+						AllAddresses: util.NewPtr[bool](false),
 					},
 				},
 				&Group{
@@ -76,11 +80,11 @@ func TestReadConfig(t *testing.T) {
 					Labels: model.LabelSet{
 						"foo": "bar",
 					},
-					Port: newPtr[int](9100),
+					Port: util.NewPtr[int](9100),
 					Flags: Flags{
-						IncludeVMs:   newPtr[bool](false),
-						InetFamily:   newPtr[string](InetFamilyInet),
-						AllAddresses: newPtr[bool](true),
+						IncludeVMs:   util.NewPtr[bool](false),
+						InetFamily:   util.NewPtr[string](InetFamilyInet),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 				},
 				&Group{
@@ -93,9 +97,9 @@ func TestReadConfig(t *testing.T) {
 					},
 					Port: nil,
 					Flags: Flags{
-						IncludeVMs:   newPtr[bool](false),
-						InetFamily:   newPtr[string](InetFamilyInet),
-						AllAddresses: newPtr[bool](true),
+						IncludeVMs:   util.NewPtr[bool](false),
+						InetFamily:   util.NewPtr[string](InetFamilyInet),
+						AllAddresses: util.NewPtr[bool](true),
 					},
 					Filters: []*Filter{
 						&Filter{
@@ -115,7 +119,7 @@ func TestReadConfig(t *testing.T) {
 	)
 
 	// good config file
-	result, err = readConfigFile("testdata/config/good.yml")
+	result, err = ReadConfigFile("testdata/config/good.yml")
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
 
@@ -123,58 +127,153 @@ func TestReadConfig(t *testing.T) {
 	assert.Equal(t, expected, result)
 
 	// missing path
-	_, err = readConfigFile("")
+	_, err = ReadConfigFile("")
 	assert.ErrorIs(t, err, ErrorMissingFile)
 
 	// file missing
-	_, err = readConfigFile("testdata/config/foo")
+	_, err = ReadConfigFile("testdata/config/foo")
 	assert.ErrorIs(t, err, ErrorReadingFile)
 
 	// malformed yaml
-	_, err = readConfigFile("testdata/config/malformed.yml")
+	_, err = ReadConfigFile("testdata/config/malformed.yml")
 	assert.ErrorIs(t, err, ErrorParsingFile)
 
 	// missing required
-	_, err = readConfigFile("testdata/config/missingRequired.yml")
+	_, err = ReadConfigFile("testdata/config/missingRequired.yml")
 	assert.ErrorIs(t, err, ErrorMissingRequired)
 
 	// missing required in group
-	_, err = readConfigFile("testdata/config/missingRequiredInGroup.yml")
+	_, err = ReadConfigFile("testdata/config/missingRequiredInGroup.yml")
 	assert.ErrorIs(t, err, ErrorMissingRequired)
 
 	// bad group type
-	_, err = readConfigFile("testdata/config/badGroupType.yml")
+	_, err = ReadConfigFile("testdata/config/badGroupType.yml")
 	assert.ErrorIs(t, err, ErrorBadGroupType)
 
 	// bad default scan interval
-	_, err = readConfigFile("testdata/config/badScanInterval.yml")
+	_, err = ReadConfigFile("testdata/config/badScanInterval.yml")
 	assert.ErrorIs(t, err, ErrorBadScanInterval)
 
 	// bad group scan interval
-	_, err = readConfigFile("testdata/config/badScanInterval2.yml")
+	_, err = ReadConfigFile("testdata/config/badScanInterval2.yml")
 	assert.ErrorIs(t, err, ErrorBadScanInterval)
 
 	// duplicate file
-	_, err = readConfigFile("testdata/config/duplicateFile.yml")
+	_, err = ReadConfigFile("testdata/config/duplicateFile.yml")
 	assert.ErrorIs(t, err, ErrorDuplicateFile)
 
 	// bad port
-	_, err = readConfigFile("testdata/config/badPort.yml")
+	_, err = ReadConfigFile("testdata/config/badPort.yml")
 	assert.ErrorIs(t, err, ErrorParsingFile)
 
 	// bad port2
-	_, err = readConfigFile("testdata/config/badPort2.yml")
+	_, err = ReadConfigFile("testdata/config/badPort2.yml")
 	assert.ErrorIs(t, err, ErrorBadPort)
 
 	// bad inet family
-	_, err = readConfigFile("testdata/config/badInetFamily.yml")
+	_, err = ReadConfigFile("testdata/config/badInetFamily.yml")
 	assert.ErrorIs(t, err, ErrorBadInetFamily)
 
 	// bad filter label
-	_, err = readConfigFile("testdata/config/badFilterLabel.yml")
+	_, err = ReadConfigFile("testdata/config/badFilterLabel.yml")
 	assert.ErrorIs(t, err, ErrorBadFilterLabel)
 
 	// bad filter match
-	_, err = readConfigFile("testdata/config/badFilterMatch.yml")
+	_, err = ReadConfigFile("testdata/config/badFilterMatch.yml")
 	assert.ErrorIs(t, err, ErrorBadFilterMatch)
+}
+
+func TestFiltersMatch(t *testing.T) {
+	var (
+		group = Group{
+			Filters: []*Filter{
+				&Filter{
+					Label: "netbox_foo",
+					Match: "bar",
+				},
+				&Filter{
+					Label: "netbox_foo2",
+					Match: "(foo|bar)",
+				},
+				&Filter{
+					Label: "netbox_foo3",
+					Match: "[0-9]+",
+				},
+				&Filter{
+					Label:  "netbox_foo4",
+					Match:  "bar",
+					Negate: true,
+				},
+			},
+		}
+		data = []struct {
+			target   *targetgroup.Group
+			expected bool
+		}{
+			{
+				// should work
+				target: &targetgroup.Group{
+					Labels: model.LabelSet{
+						"netbox_foo":  "bar",
+						"netbox_foo2": "foo",
+						"netbox_foo3": "123",
+						"netbox_foo4": "123",
+					},
+				},
+				expected: true,
+			},
+			{
+				// missing label defined in filters should fail
+				target: &targetgroup.Group{
+					Labels: model.LabelSet{
+						"netbox_foo":  "bar",
+						"netbox_foo2": "foo",
+					},
+				},
+				expected: false,
+			},
+			{
+				// netbox_foo3 should fail
+				target: &targetgroup.Group{
+					Labels: model.LabelSet{
+						"netbox_foo":  "bar",
+						"netbox_foo2": "foo",
+						"netbox_foo3": "abc",
+					},
+				},
+				expected: false,
+			},
+			{
+				// all label values are wrong
+				target: &targetgroup.Group{
+					Labels: model.LabelSet{
+						"netbox_foo":  "this",
+						"netbox_foo2": "should",
+						"netbox_foo3": "fail",
+					},
+				},
+				expected: false,
+			},
+			{
+				// negate match and thus return false
+				target: &targetgroup.Group{
+					Labels: model.LabelSet{
+						"netbox_foo":  "bar",
+						"netbox_foo2": "foo",
+						"netbox_foo3": "123",
+						"netbox_foo4": "bar",
+					},
+				},
+				expected: false,
+			},
+		}
+		i int
+	)
+
+	// Filters must compile
+	require.NoError(t, validateFilters(group.Filters))
+
+	for i = range data {
+		assert.Equal(t, data[i].expected, group.FiltersMatch(data[i].target))
+	}
 }
