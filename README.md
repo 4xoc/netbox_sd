@@ -178,10 +178,6 @@ metrics (additional to golang specific ones) are exposed:
 - netbox_sd_api_status (200, 403, etc)
 - netbox_sd_api_duration_seconds
 
-## Changelog
-### v1.0.0
- - initial open source release
-
 ## Noteworthy Mention
 Special thanks goes out to [WIIT AG](https://www.wiit.cloud/en/) for open sourcing netbox_sd and netbox-go. This tool
 has been developed and used in production for multiple years now internally and WIIT AG was kind enough to release this

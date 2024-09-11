@@ -43,6 +43,7 @@ package netbox
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -97,6 +98,11 @@ type Value struct {
 // Name is a generic structure that is often used to define things like site, rack, etc.
 type Name struct {
 	Name string `json:"name"`
+}
+
+// NetboxStatus contains details about a Netbox installation.
+type netboxStatus struct {
+	Version string `json:"netbox-version"`
 }
 
 // New creates a new Client to interact with a netbox API. baseURL must point to a valid Netbox installation (without
@@ -191,11 +197,12 @@ func New(baseURL, token, promNamespace string, withTLS bool, tlsInsecure bool) (
 // token. If connection and token are okay, nil is returned.
 func (client *Client) VerifyConnectivity() error {
 	var (
-		resp response
-		err  error
+		resp   response
+		err    error
+		status netboxStatus
 	)
 
-	resp, err = client.get("/dcim/devices/?limit=1")
+	resp, err = client.get("/api/status/")
 	if err != nil {
 		return fmt.Errorf("failed to query api: %w", err)
 	}
@@ -204,6 +211,15 @@ func (client *Client) VerifyConnectivity() error {
 	if resp.StatusCode() != 200 {
 		client.promFailure.Inc()
 		return ErrInvalidToken
+	}
+
+	err = json.Unmarshal(resp.RawBody().Bytes(), &status)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal json from response body buffer: %w", err)
+	}
+
+	if !netboxIsCompatible(status.Version) {
+		return fmt.Errorf("detected incompatible Netbox version: v%s", status.Version)
 	}
 
 	return nil

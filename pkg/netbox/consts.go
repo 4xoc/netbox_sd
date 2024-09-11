@@ -32,4 +32,6 @@ const (
 	StatusIPDeprecated string = "DEPRECATED"
 	StatusIPDHCP       string = "DHCP"
 	StatusIPSLAAC      string = "SLAAC"
+
+	compatibleNetboxVersion string = ">=3.4.5,<4.0.0"
 )
