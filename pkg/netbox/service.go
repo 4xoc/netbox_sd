@@ -78,36 +78,41 @@ func (client *Client) GetServices() ([]*Service, error) {
 
 // GetServicesByName returns a list of all services that exists in Netbox based on the service's name.
 func (client *Client) GetServicesByName(name string) ([]*Service, error) {
-	var (
-		query   string = fmt.Sprintf(queryServicesByName, name)
-		resp    response
-		wrapper graphQLResponseWrapper
-		err     error
-	)
+	//var (
+	//	query   string = fmt.Sprintf(queryServicesByName, name)
+	//	resp    response
+	//	wrapper graphQLResponseWrapper
+	//	err     error
+	//)
 
-	resp, err = client.graphQL(query)
-	if err != nil {
-		return nil, fmt.Errorf("failed to query api: %w", err)
-	}
+	// TODO: remove this once https://github.com/netbox-community/netbox/issues/17457 has been released
+	return client.getServiceByNameIssue17457(name)
 
-	if resp.StatusCode() != 200 {
-		return nil, ErrUnexpectedStatusCode
-	}
-
-	err = json.Unmarshal(resp.RawBody().Bytes(), &wrapper)
-	if err != nil {
-		client.promFailure.Inc()
-		return nil, fmt.Errorf("failed to unmarshal json from response body buffer: %w", err)
-	}
-
-	for i := range wrapper.Data.ServiceList {
-		if wrapper.Data.ServiceList[i].VM != nil {
-			wrapper.Data.ServiceList[i].VM.isVirtual = true
-		}
-	}
-
-	// TODO: remove once fixed in Netbox (https://github.com/netbox-community/netbox/issues/11472)
-	wrapper.parseIDs()
-
-	return wrapper.Data.ServiceList, nil
+	// resp, err = client.graphQL(query)
+	//
+	//	if err != nil {
+	//		return nil, fmt.Errorf("failed to query api: %w", err)
+	//	}
+	//
+	//	if resp.StatusCode() != 200 {
+	//		return nil, ErrUnexpectedStatusCode
+	//	}
+	//
+	// err = json.Unmarshal(resp.RawBody().Bytes(), &wrapper)
+	//
+	//	if err != nil {
+	//		client.promFailure.Inc()
+	//		return nil, fmt.Errorf("failed to unmarshal json from response body buffer: %w", err)
+	//	}
+	//
+	//	for i := range wrapper.Data.ServiceList {
+	//		if wrapper.Data.ServiceList[i].VM != nil {
+	//			wrapper.Data.ServiceList[i].VM.isVirtual = true
+	//		}
+	//	}
+	//
+	// // TODO: remove once fixed in Netbox (https://github.com/netbox-community/netbox/issues/11472)
+	// wrapper.parseIDs()
+	//
+	// return wrapper.Data.ServiceList, nil
 }

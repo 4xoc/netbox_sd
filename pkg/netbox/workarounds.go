@@ -116,3 +116,27 @@ func (s *Service) parseIDs() {
 		s.IPAddresses[i].parseIDs()
 	}
 }
+
+// getServiceByNameIssue17457 is a workaround until https://github.com/netbox-community/netbox/issues/17457 has been
+// released in a new version of Netbox. It adds additional filtering on top of getting all services.
+func (client *Client) getServiceByNameIssue17457(name string) ([]*Service, error) {
+	var (
+		allServices      []*Service
+		err              error
+		i                int
+		matchingServices []*Service = make([]*Service, 0)
+	)
+
+	allServices, err = client.GetServices()
+	if err != nil {
+		return nil, err
+	}
+
+	for i = range allServices {
+		if allServices[i].Name == name {
+			matchingServices = append(matchingServices, allServices[i])
+		}
+	}
+
+	return matchingServices, nil
+}
