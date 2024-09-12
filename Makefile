@@ -1,4 +1,4 @@
-VERSION = v1.0.1
+VERSION = v1.1.0
 COMMIT = $(shell git rev-list -1 HEAD | cut -c1-10)
 DIRTY = $(shell git diff --quiet || echo '-dirty')
 DATE = $(shell date -u +%a,\ %d\ %b\ %Y\ %H:%M:%S\ %Z)

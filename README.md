@@ -32,8 +32,8 @@ more bases. A couple of ideas I have in mind:
 - how about a web gui to get more insights into netbox_sd?
 
 ## Supported Netbox Versions
-< 4.0.0 (v4 has not been tested, but is a high prio topic)  
-\>= 3.4.5 required (or else you'll have a bad time)
+\>=4.0.10: use release v1.1.0
+\>= 3.4.5 & < 4.0.0: use release up to v1.0.1
 
 ## Usage Considerations
 This software is intended to run on the same machine that Prometheus runs on. As a user, you must ensure that the files
