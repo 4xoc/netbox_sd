@@ -59,7 +59,7 @@ var (
 		Platform: Name{
 			Name: "platform-A",
 		},
-		Status: "ACTIVE",
+		Status: StatusDeviceActive,
 		Tags: []Name{
 			{
 				Name: "node_exporter",
@@ -98,7 +98,7 @@ var (
 		Platform: Name{
 			Name: "platform-B",
 		},
-		Status: "ACTIVE",
+		Status: StatusDeviceActive,
 		Tags: []Name{
 			{
 				Name: "node_exporter",
@@ -121,7 +121,7 @@ var (
 		Role: Name{
 			Name: "role-C",
 		},
-		Status:    "ACTIVE",
+		Status:    StatusDeviceActive,
 		Tags:      []Name{},
 		isVirtual: true,
 	}

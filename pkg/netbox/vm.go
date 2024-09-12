@@ -26,7 +26,7 @@ const (
 	queryVMAttributes string = "id name primary_ip4{" + queryIPAddressAttributes + "} primary_ip6{" + queryIPAddressAttributes + "} custom_fields site{name} tenant{name} platform{name} role{name} status tags{name}"
 	queryVM           string = "{virtual_machine(id:%d){" + queryVMAttributes + "}}"
 	queryVMs          string = "{virtual_machine_list{" + queryVMAttributes + "}}"
-	queryVMsByTag     string = "{virtual_machine_list(tag:\"%s\"){" + queryVMAttributes + "}}"
+	queryVMsByTag     string = "{virtual_machine_list(filters: {tag:\"%s\"}){" + queryVMAttributes + "}}"
 )
 
 // IsVirtual returns true if the device represents a virtual machine.

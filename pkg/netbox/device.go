@@ -26,7 +26,7 @@ const (
 	queryDeviceAttributes string = "id name primary_ip4{" + queryIPAddressAttributes + "} primary_ip6{" + queryIPAddressAttributes + "} custom_fields rack{name} site{name} role{name} tenant{name} platform{name} serial asset_tag status tags{name}"
 	queryDevice           string = "{device(id:%d){" + queryDeviceAttributes + "}}"
 	queryDevices          string = "{device_list{" + queryDeviceAttributes + "}}"
-	queryDevicesByTag     string = "{device_list(tag:\"%s\"){" + queryDeviceAttributes + "}}"
+	queryDevicesByTag     string = "{device_list(filters: {tag: \"%s\"}){" + queryDeviceAttributes + "}}"
 )
 
 // Device describes a subset of details of a Netbox device.

@@ -27,8 +27,8 @@ const (
 	queryVirtualInterfaceAttributes string = "id name description enabled mtu parent{id} mode custom_fields device: virtual_machine{" + queryVMAttributes + "} tags{name}"
 	queryInterface                  string = "{interface(id:%d){" + queryInterfaceAttributes + "}}"
 	queryVirtualInterface           string = "{interface: vm_interface(id:%d){" + queryVirtualInterfaceAttributes + "}}"
-	queryInterfacesByTag            string = "{interface_list(tag:\"%s\"){" + queryInterfaceAttributes + "}}"
-	queryVirtualInterfacesByTag     string = "{interface_list: vm_interface_list(tag:\"%s\"){" + queryVirtualInterfaceAttributes + "}}"
+	queryInterfacesByTag            string = "{interface_list(filters: {tag:\"%s\"}){" + queryInterfaceAttributes + "}}"
+	queryVirtualInterfacesByTag     string = "{interface_list: vm_interface_list(filters: {tag:\"%s\"}){" + queryVirtualInterfaceAttributes + "}}"
 )
 
 // Interface describes a subset of details about a Netbox interface.

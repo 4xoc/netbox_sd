@@ -33,7 +33,7 @@ var (
 		Device:      devA,
 		Ports:       []int{22},
 		IPAddresses: []*IP{ip1},
-		Protocol:    "TCP",
+		Protocol:    ServiceProtocolTCP,
 		CustomFields: CFMap{
 			entries: map[string]*CustomField{
 				"custom_field_N": &CustomField{
@@ -50,7 +50,7 @@ var (
 		VM:          vmA,
 		Ports:       []int{5353, 53},
 		IPAddresses: []*IP{ip3, ip4},
-		Protocol:    "UDP",
+		Protocol:    ServiceProtocolUDP,
 		CustomFields: CFMap{
 			entries: map[string]*CustomField{
 				"custom_field_N": &CustomField{
@@ -67,7 +67,7 @@ var (
 		VM:          vmB,
 		Ports:       []int{9909},
 		IPAddresses: []*IP{ip6},
-		Protocol:    "SCTP",
+		Protocol:    ServiceProtocolSCTP,
 		CustomFields: CFMap{
 			entries: map[string]*CustomField{
 				"custom_field_N": &CustomField{
@@ -84,7 +84,7 @@ var (
 		VM:          vmA,
 		Ports:       []int{22},
 		IPAddresses: []*IP{ip4},
-		Protocol:    "TCP",
+		Protocol:    ServiceProtocolTCP,
 		CustomFields: CFMap{
 			entries: map[string]*CustomField{},
 		},
@@ -96,7 +96,7 @@ var (
 		VM:          vmB,
 		Ports:       []int{22},
 		IPAddresses: []*IP{ip6},
-		Protocol:    "TCP",
+		Protocol:    ServiceProtocolTCP,
 		CustomFields: CFMap{
 			entries: map[string]*CustomField{},
 		},

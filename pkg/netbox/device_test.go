@@ -64,7 +64,7 @@ var (
 		},
 		SerialNumber: "abcd",
 		AssetTag:     "a1234",
-		Status:       "ACTIVE",
+		Status:       StatusDeviceActive,
 		Tags: []Name{
 			{
 				Name: "node_exporter",
@@ -98,7 +98,7 @@ var (
 		},
 		SerialNumber: "abcde",
 		AssetTag:     "a12345",
-		Status:       "ACTIVE",
+		Status:       StatusDeviceActive,
 		Tags: []Name{
 			{
 				Name: "node_exporter",

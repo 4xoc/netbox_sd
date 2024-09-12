@@ -24,7 +24,7 @@ import (
 
 const (
 	queryServiceAttributes string = "id name device {" + queryDeviceAttributes + "} virtual_machine {" + queryVMAttributes + "} ports ipaddresses {" + queryIPAddressAttributes + "} protocol custom_fields"
-	queryServicesByName    string = "{service_list(name:\"%s\"){" + queryServiceAttributes + "}}"
+	queryServicesByName    string = "{service_list(filters: {name: {starts_with: \"%s\"}}){" + queryServiceAttributes + "}}"
 	queryServices          string = "{service_list{" + queryServiceAttributes + "}}"
 )
 

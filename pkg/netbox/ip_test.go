@@ -29,56 +29,56 @@ var (
 		ID:       1,
 		IDString: "1",
 		Address:  "2001:db8::1/64",
-		Status:   "ACTIVE",
+		Status:   StatusIPActive,
 		VRF:      nil,
 	}
 	ip2 = &IP{
 		ID:       2,
 		IDString: "2",
 		Address:  "10.0.0.1/24",
-		Status:   "ACTIVE",
+		Status:   StatusIPActive,
 		VRF:      nil,
 	}
 	ip3 = &IP{
 		ID:       3,
 		IDString: "3",
 		Address:  "10.0.0.3/24",
-		Status:   "ACTIVE",
+		Status:   StatusIPActive,
 		VRF:      nil,
 	}
 	ip4 = &IP{
 		ID:       4,
 		IDString: "4",
 		Address:  "2001:db8::3/64",
-		Status:   "ACTIVE",
+		Status:   StatusIPActive,
 		VRF:      nil,
 	}
 	ip5 = &IP{
 		ID:       5,
 		IDString: "5",
 		Address:  "10.0.0.2/24",
-		Status:   "ACTIVE",
+		Status:   StatusIPActive,
 		VRF:      nil,
 	}
 	ip6 = &IP{
 		ID:       6,
 		IDString: "6",
 		Address:  "2001:db8::2/64",
-		Status:   "ACTIVE",
+		Status:   StatusIPActive,
 		VRF:      nil,
 	}
 	ip7 = &IP{
 		ID:       7,
 		IDString: "7",
 		Address:  "2001:db8::4/64",
-		Status:   "RESERVED",
+		Status:   StatusIPReserved,
 		VRF:      nil,
 	}
 	ip8 = &IP{
 		ID:       8,
 		IDString: "8",
 		Address:  "2001:db8::4/64",
-		Status:   "DEPRECATED",
+		Status:   StatusIPDeprecated,
 		VRF: &VRF{
 			ID:       1,
 			IDString: "1",

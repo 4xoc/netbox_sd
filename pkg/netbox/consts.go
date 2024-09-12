@@ -20,18 +20,24 @@ package netbox
 // These constants are used to match values returned by Netbox to static names in go. Since Netbox happens to change API
 // details frequently to address new use cases, these constants aim to provide some consistency across applications.
 const (
-	StatusDeviceActive          string = "ACTIVE"
-	StatusDeviceOffline         string = "OFFLINE"
-	StatusDevicePlanned         string = "PLANNED"
-	StatusDeviceStaged          string = "STAGED"
-	StatusDeviceFailed          string = "FAILED"
-	StatusDeviceDecommissioning string = "DECOMMISSIONING"
+	StatusDeviceActive          string = "active"
+	StatusDeviceOffline         string = "offline"
+	StatusDevicePlanned         string = "planned"
+	StatusDeviceStaged          string = "staged"
+	StatusDeviceFailed          string = "failed"
+	StatusDeviceDecommissioning string = "decommissioning"
 
-	StatusIPActive     string = "ACTIVE"
-	StatusIPReserved   string = "RESERVED"
-	StatusIPDeprecated string = "DEPRECATED"
-	StatusIPDHCP       string = "DHCP"
-	StatusIPSLAAC      string = "SLAAC"
+	StatusIPActive     string = "active"
+	StatusIPReserved   string = "reserved"
+	StatusIPDeprecated string = "deprecated"
+	StatusIPDHCP       string = "dhcp"
+	StatusIPSLAAC      string = "slaac"
 
-	compatibleNetboxVersion string = ">=3.4.5,<4.0.0"
+	ServiceProtocolTCP  string = "tcp"
+	ServiceProtocolUDP  string = "udp"
+	ServiceProtocolSCTP string = "sctp"
+
+	// because:
+	// >=4.0.10 - https://github.com/netbox-community/netbox/issues/16946
+	compatibleNetboxVersion string = ">=4.0.10"
 )

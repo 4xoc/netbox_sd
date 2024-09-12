@@ -27,9 +27,9 @@ import (
 // Values of IP status as in IP.Status.Value
 const (
 	queryIPAddressAttributes string = "id address status vrf {id, name}"
-	queryIPByAddress         string = "{ip_address_list(address:\"%s\"){" + queryIPAddressAttributes + "}}"
-	queryInterfaceIPs        string = "{ip_address_list(interface_id:\"%d\"){" + queryIPAddressAttributes + "}}"
-	queryVirtualInterfaceIPs string = "{ip_address_list(vminterface_id:\"%d\"){" + queryIPAddressAttributes + "}}"
+	queryIPByAddress         string = "{ip_address_list(filters: {address: {starts_with: \"%s\"}}){" + queryIPAddressAttributes + "}}"
+	queryInterfaceIPs        string = "{ip_address_list(filters: {interface_id:\"%d\"}){" + queryIPAddressAttributes + "}}"
+	queryVirtualInterfaceIPs string = "{ip_address_list(filters: {vminterface_id:\"%d\"}){" + queryIPAddressAttributes + "}}"
 )
 
 var (
