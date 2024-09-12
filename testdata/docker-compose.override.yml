@@ -1,0 +1,11 @@
+services:
+  netbox:
+    healthcheck:
+      # on DB migrations the default isn't enough
+      start_period: 300s
+    ports:
+      - 8000:8080
+  postgres:
+    volumes:
+      # this loads the testdata into postgres which will automatically fill the database
+      - ${DB_DATA}:/docker-entrypoint-initdb.d/init.sql

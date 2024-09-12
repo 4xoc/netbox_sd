@@ -1,4 +1,5 @@
 coverage.out
+coverage-short.out
 config.yml
 netbox_sd
 bin/
